@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
@@ -11,31 +11,35 @@ export class ProductsController{
         this.productService = productService;
     }
 
+    @Post()
+    create(@Body() createProductDto:CreateProductDto){
+        return this.productService.create(createProductDto);
+    }
+
     @Get()
     findAll(){
-        return this.productService.getProducts();
+        return this.productService.findAll();
     }
 
     @Get(':id')
     findOne(@Param('id') id:number){
-        return this.productService.getProductById(id);
+        return this.productService.findOne(id);
     }
 
-    @Post()
-    @HttpCode(HttpStatus.CREATED)
-    create(@Body() createProductDto:CreateProductDto){
-        return this.productService.setProduct(createProductDto);
+    // Coloquei o Put nessa rota de products porque deve conter pelo menos 1 rota com os 5 Verbos!
+    @Put(':id')
+    fullUpdate(@Param('id') id:number, @Body() createProductDto:CreateProductDto){
+        return this.productService.fullUpdate(id, createProductDto);
     }
 
     @Patch(':id')
-    // @HttpCode(HttpStatus.ACCEPTED)
     update(@Param('id') id:number, @Body() updateProductDto:UpdateProductDto){
-        return this.productService.updateProduct(id, updateProductDto)
+        return this.productService.parcialUpdate(id, updateProductDto)
     }
 
     @Delete(':id')
     delete(@Param('id') id:number){
-        return this.productService.deleteProduct(id);
+        return this.productService.delete(id);
     }
 
 }
